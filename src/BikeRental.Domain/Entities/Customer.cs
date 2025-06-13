@@ -2,6 +2,15 @@
 
 public class Customer
 {
+    public Customer(Guid guid, string fullName, string cnpj, DateTime birthDate, string cnhNumber, string cnhType)
+    {
+        FullName = fullName;
+        Cnpj = cnpj;
+        BirthDate = birthDate;
+        CnhNumber = cnhNumber;
+        CnhType = cnhType;
+    }
+
     public Guid Id { get; set; }
     public string FullName { get; set; } = null!;
     public string Cnpj { get; set; } = null!; // Unique
