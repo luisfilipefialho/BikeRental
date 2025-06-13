@@ -1,9 +1,12 @@
-﻿namespace BikeRental.Domain.Interfaces.Repositories
+﻿using BikeRental.Domain.Entities;
+
+namespace BikeRental.Domain.Interfaces.Repositories
 {
     public interface IBaseRepository<T> where T : class
     {
         Task<T?> GetByIdAsync(Guid id);
         Task<IEnumerable<T>> GetAllAsync();
+        Task<bool> ExistsAsync(Guid id);
         Task AddAsync(T entity);
         void Update(T entity);
         void Remove(T entity);

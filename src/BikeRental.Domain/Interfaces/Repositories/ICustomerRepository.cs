@@ -6,5 +6,6 @@ namespace BikeRental.Domain.Interfaces.Repositories
     {
         Task<Customer?> GetByCnpjAsync(string cnpj);
         Task<Customer?> GetByCnhNumberAsync(string cnhNumber);
+        Task<bool> ExistsAsync(string cnpj, string cnhNumber);
     }
 }
