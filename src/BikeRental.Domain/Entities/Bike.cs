@@ -2,10 +2,10 @@
 
 public class Bike
 {
-    public Guid Id { get; set; } // Identificador
+    public Guid Id { get; set; }
     public int Year { get; set; }
     public string Model { get; set; } = null!;
-    public string LicensePlate { get; set; } = null!; // Placa única
+    public string LicensePlate { get; set; } = null!; // Unique
 
     public ICollection<Rental> Rentals { get; set; } = new List<Rental>();
 }
