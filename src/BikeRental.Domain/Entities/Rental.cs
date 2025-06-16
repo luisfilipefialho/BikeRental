@@ -2,23 +2,27 @@
 
 public class Rental
 {
-    public Rental(Guid guid, Guid id1, Guid id2, DateTime startDate, DateTime endDate, DateTime expectedEndDate, int planDays)
+    public Rental() { }
+    public Rental(Guid id, string customerId, string bikeId, DateTime startDate, DateTime endDate, DateTime expectedEndDate)
     {
+        Identifier = id.ToString();
+        CustomerId = customerId;
+        BikeId = bikeId;
         StartDate = startDate;
         EndDate = endDate;
         ExpectedEndDate = expectedEndDate;
     }
 
-    public Guid Id { get; set; }
-    public Guid CustomerId { get; set; }
-    public Guid BikeId { get; set; }
-    public DateTime StartDate { get; set; } // First Day after Creation
-    public DateTime EndDate { get; set; }   // Real End
-    public DateTime ExpectedEndDate { get; set; } // Expected End
+    public string Identifier { get; set; } = null!;
+    public string CustomerId { get; set; } = null!;
+    public string BikeId { get; set; } = null!;
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public DateTime ExpectedEndDate { get; set; }
     public decimal TotalCost { get; set; }
 
     public Customer Customer { get; set; } = null!;
     public Bike Bike { get; set; } = null!;
 
     public int RentalDays => (EndDate - StartDate).Days;
-} 
+}

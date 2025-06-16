@@ -2,8 +2,10 @@
 
 public class Customer
 {
-    public Customer(Guid guid, string fullName, string cnpj, DateTime birthDate, string cnhNumber, string cnhType)
+    public Customer() { }
+    public Customer(string identifier, string fullName, string cnpj, DateTime birthDate, string cnhNumber, string cnhType)
     {
+        Identifier = identifier;
         FullName = fullName;
         Cnpj = cnpj;
         BirthDate = birthDate;
@@ -11,13 +13,13 @@ public class Customer
         CnhType = cnhType;
     }
 
-    public Guid Id { get; set; }
+    public string Identifier { get; set; } = null!;
     public string FullName { get; set; } = null!;
     public string Cnpj { get; set; } = null!; // Unique
     public DateTime BirthDate { get; set; }
     public string CnhNumber { get; set; } = null!; // Unique
     public string CnhType { get; set; } = null!; // "A", "B", "A+B"
-    public string? CnhImageFileName { get; set; } // File name on s3
+    public string? CnhImagePath { get; set; } // File path on S3
 
     public bool HasCategoryA => CnhType == "A" || CnhType == "A+B";
 
