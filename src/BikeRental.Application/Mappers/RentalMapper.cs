@@ -9,7 +9,7 @@ public static class RentalMapper
     {
         return new GetRentalResponse
         {
-            Identifier = rental.Id.ToString(),
+            Identifier = rental.Identifier.ToString(),
             DailyRate = rental.TotalCost / Math.Max((rental.EndDate - rental.StartDate).Days, 1),
             CustomerId = rental.CustomerId.ToString(),
             BikeId = rental.BikeId.ToString(),

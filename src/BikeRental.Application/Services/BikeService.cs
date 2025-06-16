@@ -1,37 +1,49 @@
-﻿using BikeRental.Application.DTOs.Bike;
+﻿using System.Diagnostics;
+using BikeRental.Application.DTOs.Bike;
+using BikeRental.Application.Exceptions;
 using BikeRental.Application.Interfaces;
 using BikeRental.Domain.Entities;
 using BikeRental.Domain.Interfaces.Repositories;
-//using BikeRental.Domain.Interfaces.EventHandler;
+using BikeRental.Messaging;
+using BikeRental.Messaging.Events;
 
 namespace BikeRental.Application.Services;
 
 public class BikeService : IBikeService
 {
     private readonly IBikeRepository _bikeRepository;
-    //private readonly IEventPublisher _eventPublisher;
+    private readonly IEventPublisher _eventPublisher;
 
-    public BikeService(IBikeRepository bikeRepository) // , IEventPublisher eventPublisher
+    public BikeService(IBikeRepository bikeRepository, IEventPublisher eventPublisher)
     {
         _bikeRepository = bikeRepository;
-        //_eventPublisher = eventPublisher;
+        _eventPublisher = eventPublisher;
     }
 
     public async Task CreateAsync(CreateBikeRequest request)
     {
-        var exists = await _bikeRepository.ExistsByPlateAsync(request.LicensePlate);
-        if (exists) throw new Exception("Bike with same plate already exists.");
+        var existId = await _bikeRepository.GetByIdAsync(request.Identifier);
+        if (existId != null) throw new DomainConflictException("Bike with this Id already exists");
 
-        var bike = new Bike(Guid.NewGuid(), request.Identifier, request.Model, request.Year, request.LicensePlate);
+        var exists = await _bikeRepository.ExistsByPlateAsync(request.LicensePlate);
+        if (exists) throw new DomainConflictException("Bike with this Plate already exists");
+
+        var bike = new Bike(request.Identifier, request.Model, request.Year, request.LicensePlate);
 
         await _bikeRepository.AddAsync(bike);
 
-        //await _eventPublisher.PublishAsync(new { bike.Id, bike.Year, bike.Model }, "bike.created");
+        await _eventPublisher.PublishAsync(new BikeCreatedEvent
+        {
+            Identifier = bike.Identifier,
+            Year = bike.Year,
+            Model = bike.Model,
+            LicensePlate = bike.LicensePlate
+        }, "bike.created");
     }
 
-    public async Task<GetBikeResponse> GetByIdAsync(Guid id)
+    public async Task<GetBikeResponse?> GetByIdAsync(string id)
     {
-        var bike = await _bikeRepository.GetByIdAsync(id) ?? throw new Exception("Bike not found");
+        var bike = await _bikeRepository.GetByIdAsync(id) ?? throw new EntityNotFoundException("Bike not found");
 
         return new GetBikeResponse(bike.Identifier, bike.Year, bike.Model, bike.LicensePlate);
     }
@@ -42,20 +54,23 @@ public class BikeService : IBikeService
         return bikes.Select(b => new GetBikeResponse(b.Identifier, b.Year, b.Model, b.LicensePlate));
     }
 
-    public async Task UpdatePlateAsync(Guid id, UpdateBikeRequest request)
+    public async Task UpdatePlateAsync(string id, UpdateBikeRequest request)
     {
         var exists = await _bikeRepository.ExistsByPlateAsync(request.LicensePlate);
-        if (exists) throw new Exception("Bike with same plate already exists.");
+        if (exists) throw new DomainConflictException("Bike with this plate already exists");
 
-        var bike = await _bikeRepository.GetByIdAsync(id) ?? throw new Exception("Bike not found");
+        var bike = await _bikeRepository.GetByIdAsync(id) ?? throw new EntityNotFoundException("Bike not found");
+
         bike.LicensePlate = request.LicensePlate;
-        _bikeRepository.Update(bike);
+        await _bikeRepository.UpdateAsync(bike);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(string identifier)
     {
-        var bike = await _bikeRepository.GetByIdAsync(id) ?? throw new Exception("Bike not found");
-        if (bike.Rentals.Any()) throw new Exception("Bike has rentals and cannot be deleted");
+        var bike = await _bikeRepository.GetByIdAsync(identifier) ?? throw new EntityNotFoundException("Bike Not Found");
+        if (bike.Rentals.Count != 0)
+            throw new HasRentalException("Bike has rentals");
+
         _bikeRepository.Remove(bike);
     }
 }

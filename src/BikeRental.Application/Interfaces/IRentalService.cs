@@ -5,6 +5,6 @@ namespace BikeRental.Application.Interfaces;
 public interface IRentalService
 {
     Task CreateAsync(CreateRentalRequest request);
-    Task<GetRentalResponse?> GetByIdAsync(Guid id);
-    Task UpdateReturnDateAsync(Guid id, UpdateRentalRequest request);
+    Task<GetRentalResponse?> GetByIdAsync(string identifier);
+    Task UpdateReturnDateAsync(string identifier, UpdateRentalRequest request);
 }

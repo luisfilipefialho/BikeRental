@@ -6,5 +6,5 @@ namespace BikeRental.Application.Interfaces;
 public interface ICustomerService
 {
     Task CreateAsync(CreateCustomerRequest request);
-    Task UploadCnhAsync(Guid customerId, UploadCnhRequest request);
+    Task UploadCnhAsync(string customerId, UploadCnhRequest request);
 }
