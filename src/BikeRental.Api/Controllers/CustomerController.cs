@@ -2,6 +2,7 @@
 using BikeRental.Application.Exceptions;
 using BikeRental.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace BikeRental.Api.Controllers;
 
@@ -17,6 +18,10 @@ public class CustomerController : ControllerBase
     }
 
     [HttpPost]
+    [SwaggerOperation(Summary = "Create a new customer", Description = "Registers a new customer")]
+    [SwaggerResponse(StatusCodes.Status201Created, "Customer created", typeof(CreateCustomerRequest))]
+    [SwaggerResponse(StatusCodes.Status409Conflict, "Conflict: CNPJ or CNH number already exists")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal server error")]
     public async Task<IActionResult> Create([FromBody] CreateCustomerRequest request)
     {
         try
@@ -35,6 +40,11 @@ public class CustomerController : ControllerBase
     }
 
     [HttpPost("{id}/upload-cnh")]
+    [SwaggerOperation(Summary = "Upload CNH image", Description = "Uploads a CNH image for a customer")]
+    [SwaggerResponse(StatusCodes.Status200OK, "CNH uploaded successfully")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid base64 data or unsupported file type")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Customer not found")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal server error")]
     public async Task<IActionResult> UploadCnh(string id, [FromBody] UploadCnhRequest request)
     {
         try

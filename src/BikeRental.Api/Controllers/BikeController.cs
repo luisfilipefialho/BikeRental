@@ -18,14 +18,10 @@ public class BikeController : ControllerBase
     }
 
     [HttpPost]
-    [SwaggerOperation(
-        Summary = "Creates a new bike.",
-        Description = "Registers a new bike in the system. Returns 201 if successful, 409 if a bike with the same identifier or plate already exists."
-    )]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [Consumes("application/json")]
+    [SwaggerOperation(Summary = "Creates a new bike", Description = "Registers a new bike in the system.")]
+    [SwaggerResponse(StatusCodes.Status201Created, "Bike Created")]
+    [SwaggerResponse(StatusCodes.Status409Conflict, "Conflict: Bike already exists")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal server error")]
     public async Task<IActionResult> Create([FromBody] CreateBikeRequest request)
     {
         try
@@ -44,9 +40,10 @@ public class BikeController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [Consumes("application/json")]
+    [SwaggerOperation(Summary = "Get bike by ID", Description = "Returns a single bike based on the provided identifier")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Bike details returned successfully", typeof(GetBikeResponse))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Bike not found")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal server error")]
     public async Task<IActionResult> GetById(string id)
     {
         if (string.IsNullOrWhiteSpace(id))
@@ -67,10 +64,10 @@ public class BikeController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [Consumes("application/json")]
+    [SwaggerOperation(Summary = "Get all bikes", Description = "Returns a list of bikes, optionally filtered by license plate")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Bikes listed successfully", typeof(IEnumerable<GetBikeResponse>))]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "No bikes found")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal server error")]
     public async Task<IActionResult> GetAll([FromQuery] string? licensePlate)
     {
         var bikes = await _bikeService.GetAllAsync(licensePlate);
@@ -81,10 +78,12 @@ public class BikeController : ControllerBase
 
 
     [HttpPut("{id}/licensePlate")]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [Consumes("application/json")]
+    [SwaggerOperation(Summary = "Update license plate", Description = "Updates the license plate of a specific bike")]
+    [SwaggerResponse(StatusCodes.Status200OK, "License plate updated")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid data")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Bike not found")]
+    [SwaggerResponse(StatusCodes.Status409Conflict, "Conflict: License plate already exists")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal server error")]
     public async Task<IActionResult> UpdatePlate(string id, [FromBody] UpdateBikeRequest request)
     {
         if (!ModelState.IsValid && string.IsNullOrWhiteSpace(id))
@@ -110,11 +109,11 @@ public class BikeController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [Consumes("application/json")]
+    [SwaggerOperation(Summary = "Delete bike", Description = "Deletes a bike if it has no rentals")]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "Bike deleted")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Bike has rentals and cannot be deleted")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Bike not found")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal server error")]
     public async Task<IActionResult> Delete(string id)
     {
         try

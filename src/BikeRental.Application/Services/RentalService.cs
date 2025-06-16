@@ -1,7 +1,6 @@
 ﻿using BikeRental.Application.DTOs.Rental;
 using BikeRental.Application.Exceptions;
 using BikeRental.Application.Interfaces;
-using BikeRental.Application.Mappers;
 using BikeRental.Domain.Entities;
 using BikeRental.Domain.Interfaces.Repositories;
 
@@ -53,7 +52,17 @@ public class RentalService(
     public async Task<GetRentalResponse?> GetByIdAsync(string id)
     {
         var rental = await rentalRepository.GetByIdAsync(id) ?? throw new EntityNotFoundException("Rental not found");
-        return RentalMapper.ToResponse(rental);
+        return new GetRentalResponse
+        {
+            Identifier = rental.Identifier,
+            DailyRate = rental.TotalCost / Math.Max((rental.EndDate - rental.StartDate).Days, 1),
+            CustomerId = rental.CustomerId,
+            BikeId = rental.BikeId,
+            StartDate = rental.StartDate,
+            EndDate = rental.EndDate,
+            ExpectedEndDate = rental.ExpectedEndDate,
+            ReturnDate = rental.EndDate != rental.ExpectedEndDate ? rental.EndDate : null
+        };
     }
 
     public async Task UpdateReturnDateAsync(string id, UpdateRentalRequest request)
