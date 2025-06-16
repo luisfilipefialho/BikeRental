@@ -1,4 +1,5 @@
 ﻿using BikeRental.Application.DTOs.Rental;
+using BikeRental.Application.Exceptions;
 using BikeRental.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,21 +19,76 @@ public class RentalController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateRentalRequest request)
     {
-        await _rentalService.CreateAsync(request);
-        return Created("", null);
+        try
+        {
+            await _rentalService.CreateAsync(request);
+            return Created(string.Empty, request);
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+
+        catch (InvalidInputException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<GetRentalResponse>> GetById(Guid id)
+    public async Task<IActionResult> GetById(string id)
     {
-        var rental = await _rentalService.GetByIdAsync(id);
-        return rental is not null ? Ok(rental) : NotFound();
+        if (string.IsNullOrWhiteSpace(id))
+            return BadRequest(new { message = "Invalid data" });
+
+        try
+        {
+            var rental = await _rentalService.GetByIdAsync(id);
+
+            if (rental is null)
+                return NotFound(new { message = "Rental not found" });
+
+            return Ok(rental);
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+
     }
 
     [HttpPut("{id}/return")]
-    public async Task<IActionResult> UpdateReturn(Guid id, [FromBody] UpdateRentalRequest request)
+    public async Task<IActionResult> UpdateReturn(string id, [FromBody] UpdateRentalRequest request)
     {
-        await _rentalService.UpdateReturnDateAsync(id, request);
-        return NoContent();
+        if (string.IsNullOrWhiteSpace(id) || !ModelState.IsValid)
+            return BadRequest(new { message = "Invalid data" });
+
+        try
+        {
+            await _rentalService.UpdateReturnDateAsync(id, request);
+            return Ok(new { message = "Return date updated successfully" });
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (InvalidInputException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

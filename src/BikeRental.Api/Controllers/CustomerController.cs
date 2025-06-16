@@ -1,4 +1,5 @@
 ﻿using BikeRental.Application.DTOs.Customer;
+using BikeRental.Application.Exceptions;
 using BikeRental.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,14 +19,40 @@ public class CustomerController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateCustomerRequest request)
     {
-        await _customerService.CreateAsync(request);
-        return Created("", null);
+        try
+        {
+            await _customerService.CreateAsync(request);
+            return Created(string.Empty, request);
+        }
+        catch (DomainConflictException ex)
+        {
+            return Conflict(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
     }
 
     [HttpPost("{id}/upload-cnh")]
-    public async Task<IActionResult> UploadCnh(Guid id, [FromBody] UploadCnhRequest request)
+    public async Task<IActionResult> UploadCnh(string id, [FromBody] UploadCnhRequest request)
     {
-        await _customerService.UploadCnhAsync(id, request);
-        return NoContent();
+        try
+        {
+            await _customerService.UploadCnhAsync(id, request);
+            return Ok("Uploaded");
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (InvalidInputException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
     }
 }

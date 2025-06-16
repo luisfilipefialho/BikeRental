@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BikeRental.Domain", "src\Bi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BikeRental.Infrastructure", "src\BikeRental.Infrastructure\BikeRental.Infrastructure.csproj", "{9C6EBD0D-B3C3-4627-BC79-62D8845EAAC1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BikeRental.Messaging", "src\BikeRental.Messaging\BikeRental.Messaging.csproj", "{AF0BFFF6-5235-4841-924A-355948C45197}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,18 @@ Global
 		{9C6EBD0D-B3C3-4627-BC79-62D8845EAAC1}.Release|x64.Build.0 = Release|Any CPU
 		{9C6EBD0D-B3C3-4627-BC79-62D8845EAAC1}.Release|x86.ActiveCfg = Release|Any CPU
 		{9C6EBD0D-B3C3-4627-BC79-62D8845EAAC1}.Release|x86.Build.0 = Release|Any CPU
+		{AF0BFFF6-5235-4841-924A-355948C45197}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF0BFFF6-5235-4841-924A-355948C45197}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF0BFFF6-5235-4841-924A-355948C45197}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AF0BFFF6-5235-4841-924A-355948C45197}.Debug|x64.Build.0 = Debug|Any CPU
+		{AF0BFFF6-5235-4841-924A-355948C45197}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AF0BFFF6-5235-4841-924A-355948C45197}.Debug|x86.Build.0 = Debug|Any CPU
+		{AF0BFFF6-5235-4841-924A-355948C45197}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF0BFFF6-5235-4841-924A-355948C45197}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF0BFFF6-5235-4841-924A-355948C45197}.Release|x64.ActiveCfg = Release|Any CPU
+		{AF0BFFF6-5235-4841-924A-355948C45197}.Release|x64.Build.0 = Release|Any CPU
+		{AF0BFFF6-5235-4841-924A-355948C45197}.Release|x86.ActiveCfg = Release|Any CPU
+		{AF0BFFF6-5235-4841-924A-355948C45197}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -80,5 +94,6 @@ Global
 		{C16543FD-8708-439F-A26B-A5718DE38441} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{B62921D4-A6A5-49D4-BDCB-6053886B6791} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{9C6EBD0D-B3C3-4627-BC79-62D8845EAAC1} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{AF0BFFF6-5235-4841-924A-355948C45197} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 EndGlobal
