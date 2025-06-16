@@ -7,6 +7,6 @@ namespace BikeRental.Domain.Interfaces.Repositories
         Task<IEnumerable<Bike>> GetAllAsync(string? licensePlate);
         Task<Bike?> GetByLicensePlateAsync(string licensePlate);
         Task<bool> ExistsByPlateAsync(string plate);
-        Task<bool> HasRentalAsync(Guid bikeId);
+        Task<bool> HasRentalAsync(string bikeIdentifier);
     }
 }

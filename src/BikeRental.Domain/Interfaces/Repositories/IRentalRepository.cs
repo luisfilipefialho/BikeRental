@@ -4,7 +4,7 @@ namespace BikeRental.Domain.Interfaces.Repositories
 {
     public interface IRentalRepository : IBaseRepository<Rental>
     {
-        Task<IEnumerable<Rental>> GetByCustomerIdAsync(Guid customerId);
-        Task<IEnumerable<Rental>> GetByBikeIdAsync(Guid bikeId);
+        Task<IEnumerable<Rental>> GetByCustomerIdAsync(string customerId);
+        Task<IEnumerable<Rental>> GetByBikeIdAsync(string bikeId);
     }
 }

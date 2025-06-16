@@ -4,12 +4,11 @@ namespace BikeRental.Domain.Interfaces.Repositories
 {
     public interface IBaseRepository<T> where T : class
     {
-        Task<T?> GetByIdAsync(Guid id);
+        Task<T?> GetByIdAsync(string identifier);
         Task<IEnumerable<T>> GetAllAsync();
-        Task<bool> ExistsAsync(Guid id);
+        Task<bool> ExistsAsync(string identifier);
         Task AddAsync(T entity);
-        void Update(T entity);
+        Task UpdateAsync(T entity);
         void Remove(T entity);
-        Task<bool> SaveChangesAsync();
     }
 }
