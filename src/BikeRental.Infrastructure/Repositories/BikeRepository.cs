@@ -21,33 +21,58 @@ public class BikeRepository : IBikeRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(Bike bike)
+    public async Task<IEnumerable<Bike>> GetAllAsync()
     {
-        _context.Bikes.Remove(bike);
-        await _context.SaveChangesAsync();
+        return await _context.Bikes.ToListAsync();
     }
 
     public async Task<IEnumerable<Bike>> GetAllAsync(string? licensePlate)
-        => await _context.Bikes.ToListAsync();
+    {
+        if (string.IsNullOrEmpty(licensePlate))
+        {
+            return await _context.Bikes.ToListAsync();
+        }
 
-    public async Task<IEnumerable<Bike>> FilterByLicensePlateAsync(string plate)
-        => await _context.Bikes.Where(b => b.LicensePlate.Contains(plate)).ToListAsync();
+        return await _context.Bikes
+            .Where(b => b.LicensePlate.Contains(licensePlate))
+            .ToListAsync();
+    }
 
-    public async Task<Bike?> GetByIdAsync(Guid id)
-        => await _context.Bikes.FindAsync(id);
+    public async Task<Bike?> GetByIdAsync(string identifier)
+    {
+        return await _context.Bikes.FindAsync(identifier);
+    }
 
     public async Task<Bike?> GetByLicensePlateAsync(string licensePlate)
-        => await _context.Bikes.FirstOrDefaultAsync(b => b.LicensePlate == licensePlate);
+    {
+        return await _context.Bikes
+            .FirstOrDefaultAsync(b => b.LicensePlate == licensePlate);
+    }
+
+    public async Task<bool> ExistsAsync(string identifier)
+    {
+        return await _context.Bikes.AnyAsync(b => b.Identifier == identifier);
+    }
+
+    public async Task<bool> ExistsByPlateAsync(string plate)
+    {
+        return await _context.Bikes.AnyAsync(b => b.LicensePlate == plate);
+    }
+
+    public async Task<bool> HasRentalAsync(string bikeId)
+    {
+        return await _context.Rentals.AnyAsync(r => r.BikeId == bikeId);
+    }
+
+    public void Remove(Bike bike)
+    {
+        _context.Bikes.Remove(bike);
+        _context.SaveChangesAsync();
+    }
 
     public async Task UpdateAsync(Bike bike)
     {
         _context.Bikes.Update(bike);
         await _context.SaveChangesAsync();
     }
-
-    public async Task<bool> HasRentalAsync(Guid bikeId)
-        => await _context.Rentals.AnyAsync(r => r.BikeId == bikeId);
-
-    public async Task<bool> ExistsByPlateAsync(string plate)
-        => await _context.Bikes.AnyAsync(b => b.LicensePlate == plate);
 }

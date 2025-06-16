@@ -3,26 +3,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BikeRental.Infrastructure.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
     public DbSet<Bike> Bikes => Set<Bike>();
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<Rental> Rentals => Set<Rental>();
+    public DbSet<Notify> Notifications { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Bike>(entity =>
         {
-            entity.HasKey(b => b.Id);
+            entity.HasKey(b => b.Identifier);
             entity.HasIndex(b => b.LicensePlate).IsUnique();
             entity.Property(b => b.Model).IsRequired();
         });
 
         modelBuilder.Entity<Customer>(entity =>
         {
-            entity.HasKey(c => c.Id);
+            entity.HasKey(c => c.Identifier);
             entity.HasIndex(c => c.Cnpj).IsUnique();
             entity.HasIndex(c => c.CnhNumber).IsUnique();
             entity.Property(c => c.FullName).IsRequired();
@@ -30,7 +30,7 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Rental>(entity =>
         {
-            entity.HasKey(r => r.Id);
+            entity.HasKey(r => r.Identifier);
 
             entity.HasOne(r => r.Bike)
                 .WithMany(b => b.Rentals)
@@ -40,5 +40,7 @@ public class AppDbContext : DbContext
                 .WithMany(c => c.Rentals)
                 .HasForeignKey(r => r.CustomerId);
         });
+
+        modelBuilder.Entity<Notify>().ToTable("Notify");
     }
 }

@@ -22,16 +22,39 @@ public class RentalRepository : IRentalRepository
     }
 
     public async Task<IEnumerable<Rental>> GetAllAsync()
-        => await _context.Rentals.ToListAsync();
+    {
+        return await _context.Rentals.ToListAsync();
+    }
 
-    public async Task<Rental?> GetByIdAsync(Guid id)
-        => await _context.Rentals.FindAsync(id);
+    public async Task<Rental?> GetByIdAsync(string id)
+    {
+        return await _context.Rentals.FindAsync(id);
+    }
 
-    public async Task<IEnumerable<Rental>> GetByBikeIdAsync(Guid bikeId)
-        => await _context.Rentals.Where(r => r.BikeId == bikeId).ToListAsync();
+    public async Task<IEnumerable<Rental>> GetByBikeIdAsync(string bikeId)
+    {
+        return await _context.Rentals
+            .Where(r => r.BikeId == bikeId)
+            .ToListAsync();
+    }
 
-    public async Task<IEnumerable<Rental>> GetByCustomerIdAsync(Guid customerId)
-        => await _context.Rentals.Where(r => r.CustomerId == customerId).ToListAsync();
+    public async Task<IEnumerable<Rental>> GetByCustomerIdAsync(string customerId)
+    {
+        return await _context.Rentals
+            .Where(r => r.CustomerId == customerId)
+            .ToListAsync();
+    }
+
+    public async Task<bool> ExistsAsync(string id)
+    {
+        return await _context.Rentals.AnyAsync(r => r.Identifier == id);
+    }
+
+    public void Remove(Rental rental)
+    {
+        _context.Rentals.Remove(rental);
+        _context.SaveChangesAsync();
+    }
 
     public async Task UpdateAsync(Rental rental)
     {

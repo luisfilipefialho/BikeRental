@@ -1,6 +1,12 @@
-﻿using BikeRental.Domain.Interfaces.Repositories;
+using BikeRental.Application.Interfaces;
+using BikeRental.Domain.Interfaces.Repositories;
+using BikeRental.Domain.Interfaces.Storage;
 using BikeRental.Infrastructure.Data;
+using BikeRental.Infrastructure.Messaging;
+using BikeRental.Infrastructure.Messaging.Consumer;
 using BikeRental.Infrastructure.Repositories;
+using BikeRental.Infrastructure.Storage;
+using BikeRental.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +23,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IBikeRepository, BikeRepository>();
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<IRentalRepository, RentalRepository>();
+        services.AddScoped<IStorageService, MinioStorageService>();
+        services.AddScoped<IEventPublisher, RabbitMqEventPublisher>();
+        services.AddHostedService<BikeCreatedEventConsumer>();
+
 
         return services;
     }

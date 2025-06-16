@@ -21,30 +21,44 @@ public class CustomerRepository : ICustomerRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(Customer customer)
+    public async Task<IEnumerable<Customer>> GetAllAsync()
     {
-        _context.Customers.Remove(customer);
-        await _context.SaveChangesAsync();
+        return await _context.Customers.ToListAsync();
     }
 
-    public async Task<IEnumerable<Customer>> GetAllAsync()
-        => await _context.Customers.ToListAsync();
+    public async Task<Customer?> GetByIdAsync(string id)
+    {
+        return await _context.Customers.FindAsync(id);
+    }
 
     public async Task<Customer?> GetByCnpjAsync(string cnpj)
-        => await _context.Customers.FirstOrDefaultAsync(c => c.Cnpj == cnpj);
+    {
+        return await _context.Customers.FirstOrDefaultAsync(c => c.Cnpj == cnpj);
+    }
 
     public async Task<Customer?> GetByCnhNumberAsync(string cnhNumber)
-        => await _context.Customers.FirstOrDefaultAsync(c => c.CnhNumber == cnhNumber);
+    {
+        return await _context.Customers.FirstOrDefaultAsync(c => c.CnhNumber == cnhNumber);
+    }
 
-    public async Task<Customer?> GetByIdAsync(Guid id)
-        => await _context.Customers.FindAsync(id);
+    public async Task<bool> ExistsAsync(string id)
+    {
+        return await _context.Customers.AnyAsync(c => c.Identifier == id);
+    }
+
+    public async Task<bool> ExistsAsync(string cnpj, string cnhNumber)
+    {
+        return await _context.Customers.AnyAsync(c => c.Cnpj == cnpj || c.CnhNumber == cnhNumber);
+    }
+    public void Remove(Customer customer)
+    {
+        _context.Customers.Remove(customer);
+        _context.SaveChangesAsync();
+    }
 
     public async Task UpdateAsync(Customer customer)
     {
         _context.Customers.Update(customer);
         await _context.SaveChangesAsync();
     }
-
-    public async Task<bool> ExistsAsync(string cnpj, string cnhNumber)
-        => await _context.Customers.AnyAsync(c => c.Cnpj == cnpj || c.CnhNumber == cnhNumber);
 }
