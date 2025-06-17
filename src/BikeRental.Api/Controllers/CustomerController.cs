@@ -1,6 +1,7 @@
 ﻿using BikeRental.Application.DTOs.Customer;
 using BikeRental.Application.Exceptions;
 using BikeRental.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -17,6 +18,7 @@ public class CustomerController : ControllerBase
         _customerService = customerService;
     }
 
+    [Authorize(Roles = "Costumer")]
     [HttpPost]
     [SwaggerOperation(Summary = "Create a new customer", Description = "Registers a new customer")]
     [SwaggerResponse(StatusCodes.Status201Created, "Customer created", typeof(CreateCustomerRequest))]
@@ -39,6 +41,7 @@ public class CustomerController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Costumer")]
     [HttpPost("{id}/upload-cnh")]
     [SwaggerOperation(Summary = "Upload CNH image", Description = "Uploads a CNH image for a customer")]
     [SwaggerResponse(StatusCodes.Status200OK, "CNH uploaded successfully")]

@@ -1,6 +1,7 @@
 ﻿using BikeRental.Application.DTOs.Rental;
 using BikeRental.Application.Exceptions;
 using BikeRental.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -17,6 +18,7 @@ public class RentalController : ControllerBase
         _rentalService = rentalService;
     }
 
+    [Authorize(Roles = "Costumer")]
     [HttpPost]
     [SwaggerOperation(Summary = "Create a rental", Description = "Creates a new rental for a bike and customer")]
     [SwaggerResponse(StatusCodes.Status201Created, "Rental created successfully", typeof(CreateRentalRequest))]
@@ -47,6 +49,7 @@ public class RentalController : ControllerBase
 
     }
 
+    [Authorize(Roles = "Costumer")]
     [HttpGet("{id}")]
     [SwaggerOperation(Summary = "Get rental by ID", Description = "Retrieves a rental's details by ID")]
     [SwaggerResponse(StatusCodes.Status200OK, "Rental found", typeof(GetRentalResponse))]
@@ -78,6 +81,7 @@ public class RentalController : ControllerBase
 
     }
 
+    [Authorize(Roles = "Costumer")]
     [HttpPut("{id}/return")]
     [SwaggerOperation(Summary = "Update return date", Description = "Updates the return date for a rental")]
     [SwaggerResponse(StatusCodes.Status200OK, "Return date updated successfully")]

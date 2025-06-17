@@ -3,6 +3,7 @@ using BikeRental.Application.Exceptions;
 using BikeRental.Application.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BikeRental.Api.Controllers;
 
@@ -17,6 +18,7 @@ public class BikeController : ControllerBase
         _bikeService = bikeService;
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [SwaggerOperation(Summary = "Creates a new bike", Description = "Registers a new bike in the system.")]
     [SwaggerResponse(StatusCodes.Status201Created, "Bike Created")]
@@ -39,6 +41,7 @@ public class BikeController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("{id}")]
     [SwaggerOperation(Summary = "Get bike by ID", Description = "Returns a single bike based on the provided identifier")]
     [SwaggerResponse(StatusCodes.Status200OK, "Bike details returned successfully", typeof(GetBikeResponse))]
@@ -63,6 +66,7 @@ public class BikeController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     [SwaggerOperation(Summary = "Get all bikes", Description = "Returns a list of bikes, optionally filtered by license plate")]
     [SwaggerResponse(StatusCodes.Status200OK, "Bikes listed successfully", typeof(IEnumerable<GetBikeResponse>))]
@@ -76,7 +80,7 @@ public class BikeController : ControllerBase
         return Ok(bikes);
     }
 
-
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}/licensePlate")]
     [SwaggerOperation(Summary = "Update license plate", Description = "Updates the license plate of a specific bike")]
     [SwaggerResponse(StatusCodes.Status200OK, "License plate updated")]
@@ -108,6 +112,7 @@ public class BikeController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     [SwaggerOperation(Summary = "Delete bike", Description = "Deletes a bike if it has no rentals")]
     [SwaggerResponse(StatusCodes.Status204NoContent, "Bike deleted")]
